@@ -123,10 +123,7 @@
             }finally{
                 c.close();
             }
-
-
-
-            return result;
+        return result;
         }
 
 }
