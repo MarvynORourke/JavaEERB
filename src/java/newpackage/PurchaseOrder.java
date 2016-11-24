@@ -1,3 +1,5 @@
+package newpackage;
+
 
 import java.sql.Date;
 
@@ -13,7 +15,7 @@ import java.sql.Date;
  */
 public class PurchaseOrder {
     
-    private int orderNum ; 
+    private int orderNum ;
     private int quantite;
     private int shippingCost;
     private int productID;

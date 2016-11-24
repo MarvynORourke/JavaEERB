@@ -7,15 +7,20 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import newpackage.PurchaseOrder;
+import newpackage.SimpleDataAccessObject;
 
 /**
- *
+ * Cette classe est une servlet et est utilisée pour authentifier l'utilisateur.
  * @author rroch
  */
 @WebServlet(name = "authentificationController", urlPatterns = {"/authentificationController"})
@@ -43,24 +48,38 @@ public class authentificationController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // On récupère les paramètres de la requête
-        String email = request.getParameter("email");
-        String mdp = request.getParameter("mdp");
-        String jspView; // La page à afficher
-        // Créér le DAO avec sa source de données
-	//SimpleDataAccessObject dao = new SimpleDataAccessObject(getDataSource());
-        // En fonction des paramètres, on initialise les variables utilisées dans les JSP
-        // Et on choisit la vue (page JSP) à afficher
-        if (!"".equals(email) && !"".equals(mdp)) {
-            request.setAttribute("email", email);
-            request.setAttribute("mdp", mdp);
-            jspView = "jspMessage.jsp";
-        } else {
-            request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
+        SimpleDataAccessObject dao = null;
+        try {
+            // On récupère les paramètres de la requête
+            String email = request.getParameter("email");
+            int mdp = Integer.parseInt(request.getParameter("mdp"));
+            String jspView; // La page à afficher
+            
+            // Créér le DAO avec sa source de données
+            dao = new SimpleDataAccessObject(getDataSource());
+            
+            // En fonction des paramètres, on initialise les variables utilisées dans les JSP
+            // Et on choisit la vue (page JSP) à afficher
+            if (dao.identifiantExist(email, mdp)) {
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
+                PurchaseOrder p1 = listeCommandes.get(1);
+                System.out.println(listeCommandes.get(1).getOrderNum());
+                request.setAttribute("commandes",listeCommandes);
+                jspView = "bonsDeCommmandes.jsp";
+            } else {
+                request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
+                jspView = "jspErreur.jsp";
+            }   // On continue vers la page JSP sélectionnée
+            request.getRequestDispatcher(jspView).forward(request, response);
+        } catch (SQLException exSQL ) {
+            Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
+        } catch (java.lang.NumberFormatException notInt){
+            String jspView;
             jspView = "jspErreur.jsp";
+            request.getRequestDispatcher(jspView).forward(request, response);
+        }finally {
+            dao = null;
         }
-        // On continue vers la page JSP sélectionnée
-        request.getRequestDispatcher(jspView).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
