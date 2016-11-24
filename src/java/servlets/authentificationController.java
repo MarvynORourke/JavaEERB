@@ -62,8 +62,6 @@ public class authentificationController extends HttpServlet {
             // Et on choisit la vue (page JSP) à afficher
             if (dao.identifiantExist(email, mdp)) {
                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
-                PurchaseOrder p1 = listeCommandes.get(1);
-                System.out.println(listeCommandes.get(1).getOrderNum());
                 request.setAttribute("commandes",listeCommandes);
                 jspView = "bonsDeCommmandes.jsp";
             } else {

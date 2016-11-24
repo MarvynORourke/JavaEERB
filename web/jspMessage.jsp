@@ -1,7 +1,7 @@
 <%-- 
     Document   : jspMessage
     Created on : 16 nov. 2016, 14:48:45
-    Author     : rroch
+    Author     : rroch & lmazeran
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
