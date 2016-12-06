@@ -55,5 +55,4 @@ public class PurchaseOrder {
     public String getFreightCompagny(){
         return this.freightCompagny;
     }
-    
 }

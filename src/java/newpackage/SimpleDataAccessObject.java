@@ -13,14 +13,15 @@ package newpackage;
     import java.sql.Connection;
     import java.sql.ResultSet;
     import java.sql.SQLException;
-    import java.sql.Statement;
-    import java.util.List;
     import javax.sql.DataSource;
     import java.sql.PreparedStatement;
     import java.util.ArrayList;
     import java.util.logging.Level;
     import java.util.logging.Logger;
-    
+    import javax.servlet.annotation.WebServlet;
+    import com.google.gson.*;
+
+@WebServlet(name = "SimpleDataAccessObject", urlPatterns = {"/SimpleDataAccessObject"})
     public class SimpleDataAccessObject {
     
         private final DataSource myDataSource;
@@ -68,6 +69,9 @@ package newpackage;
                 po = new PurchaseOrder(rs.getInt("ORDER_NUM"),rs.getInt("QUANTITY"),rs.getInt("SHIPPING_COST"),rs.getInt("PRODUCT_ID"),rs.getDate("SALES_DATE"),rs.getDate("SHIPPING_DATE"),rs.getString("FREIGHT_COMPANY"));
                 listeAchat.add(po);
             }
+            
+            Gson listeAchatJSON = new Gson();
+            listeAchatJSON.toJson(listeAchat);
             return listeAchat;
         }
 
@@ -99,9 +103,6 @@ package newpackage;
             }finally{
                 c.close();
             }
-
-
-
             return result;
         }
 
@@ -118,6 +119,38 @@ package newpackage;
                 c.commit();
                 result = true;
 
+                stmt.close();
+                c.close();
+            }catch(SQLException ex){
+                Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                c.close();
+            }
+        return result;
+        }
+        
+        public boolean modifiatePurchaseOrder(PurchaseOrder po, String ancienOrderNum) throws SQLException{
+            String sql = "UPDATE PURCHASE_ORDER" +
+                         "SET ORDER_NUM = ?, PRODUCT_ID = ?, QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ?" +
+                         "WHERE ORDER_NUM = ?";
+            
+            boolean result = false;
+            Connection c = null;
+            try{
+                c = myDataSource.getConnection();
+                c.setAutoCommit(false);
+                PreparedStatement stmt = c.prepareStatement(sql);
+                stmt.setInt(1,po.getOrderNum());
+                stmt.setInt(2,po.getProductID());
+                stmt.setInt(3,po.getQuantite());
+                stmt.setInt(4,po.getShippingCost());
+                stmt.setDate(5,po.getSaleDate());
+                stmt.setDate(6,po.getShippingDate());
+                stmt.setString(7,po.getFreightCompagny());
+                stmt.setInt(8,Integer.parseInt(ancienOrderNum));
+                stmt.executeQuery();
+                c.commit();
+                result = true;
                 stmt.close();
                 c.close();
             }catch(SQLException ex){

@@ -6,28 +6,30 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSessionBindingListener;
 import javax.sql.DataSource;
 import newpackage.PurchaseOrder;
 import newpackage.SimpleDataAccessObject;
 
 /**
- * Cette classe est une servlet et est utilisée pour authentifier l'utilisateur.
  *
- * @author rroch
+ * @author Romain
  */
-@WebServlet(name = "authentificationController", urlPatterns = {"/authentificationController"})
-public class authentificationController extends HttpServlet {
+@WebServlet(name = "modification", urlPatterns = {"/modification"})
+public class modification extends HttpServlet {
 
     public DataSource getDataSource() throws SQLException {
         org.apache.derby.jdbc.ClientDataSource ds = new org.apache.derby.jdbc.ClientDataSource();
@@ -40,7 +42,7 @@ public class authentificationController extends HttpServlet {
         ds.setPortNumber(1527);
         return ds;
     }
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,29 +52,63 @@ public class authentificationController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
         SimpleDataAccessObject dao = null;
         try {
+            
+            /*Numéro de commande:<br>
+            <input type="text" name="orderNum"><br>
+            Quantité :<br>
+            <input type="text" name="quantite"><br>
+            Fraits de port :<br>
+            <input type="text" name="shippingCost"><br>
+            ID du produit :<br>
+            <input type="text" name="productID"><br>
+            Date de la vente :<br>
+            <input type="text" name="saleDate"><br>
+            Date de transport :<br>
+            <input type="text" name="shippingDate"><br>
+            Compagnie de transport :<br>
+            <input type="text" name="freightCompagny"><br>*/
+            
             // On récupère les paramètres de la requête
-            String email = request.getParameter("email");
-            int mdp = Integer.parseInt(request.getParameter("mdp"));
+            String orderNum = request.getParameter("orderNum");
+            String quantite = request.getParameter("quantite");
+            String shippingCost = request.getParameter("shippingCost");
+            String productID = request.getParameter("productID");
+            String saleDatestr = request.getParameter("saleDate");
+            String shippingDatestr = request.getParameter("shippingDate");
+            String freightCompagny = request.getParameter("freightCompagny");
+            String ancienOrderNum = request.getParameter("id");
+            
+            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            Date saleDate = null;
+            Date shippingDate = null;
+            try {
+                saleDate = (Date) df.parse(saleDatestr);
+                shippingDate = (Date) df.parse(shippingDatestr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            
             String jspView; // La page à afficher
 
             // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
-
+            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDate,shippingDate,freightCompagny);           
+            dao.modifiatePurchaseOrder(po, ancienOrderNum);
+            
+            
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
-            if (dao.identifiantExist(email, mdp)) {
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
+            if (request.getSession(true).getAttribute("mdp") != null ) {
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(Integer.parseInt((String) request.getSession(true).getAttribute("mdp")));
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommmandes.jsp";
             } else {
-                request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
-                jspView = "jspErreur.jsp";
+                request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
+                jspView = "reAcceuil.jsp";
             }   // On continue vers la page JSP sélectionnée
-            HttpSessionBindingListener session = null;
-            request.getSession(true).setAttribute("mdp", mdp);
             request.getRequestDispatcher(jspView).forward(request, response);
         } catch (SQLException exSQL) {
             Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
@@ -97,7 +133,11 @@ public class authentificationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -111,7 +151,11 @@ public class authentificationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
