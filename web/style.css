@@ -9,11 +9,13 @@ and open the template in the editor.
 */
 
 body{
-    background-color: #666666;
+    background-color: #333333;
+    color : #ff0033;
 }
 h1{
     text-align: center;
-    color: #bfffe4;
+    color: #ff0033;
+    font-size: 40px;
 }
 .form {
   background-color: #ffffff;
@@ -22,4 +24,34 @@ h1{
   margin:40px auto;
   border-radius:4px;
   box-shadow:0 4px 10px 4px;
+}
+.ajout{
+    background-color: #ffffff;
+    padding: 40px;
+    max-width:600px;
+    margin:40px auto;
+    border-radius:4px;
+    box-shadow:0 4px 10px 4px;
+    color : #ff0033;
+    text-align: center;
+    
+}
+table{
+    text-align: center;
+    background-color: #ffffff;
+    color: #ff0033;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+td {
+    height: 50px;
+    vertical-align: bottom;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+}
+th {
+    background-color: #ff0033;
+    color: black;
 }

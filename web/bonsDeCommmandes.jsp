@@ -11,11 +11,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Bons de commandes</title>
+        <link href="./style.css" rel="stylesheet" type="text/css">
+
     </head>
     <body>
         <h1>Vous êtes authentifié. Voici vos bons de commandes :</h1>
         <div>
-                <table border="1">
+                <table border="1" class="table-fill">
                     <tr><th>Numéro de commande</th>
                         <th>Quantité</th>
                         <th>Frais de port</th>

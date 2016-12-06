@@ -9,10 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./style.css" rel="stylesheet" type="text/css">
         <title>Modification d'un bon de commande</title>
     </head>
     <body>
-        <form action = "modification" method = "POST">
+        <form class="ajout" action = "modification" method = "POST">
             Numéro de commande:<br>
             <input type="text" name="orderNum" value=${orderNum}><br>
             Quantité :<br>
