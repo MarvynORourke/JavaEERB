@@ -92,7 +92,7 @@ package newpackage;
                 stmt.setDate(7,po.getShippingDate());
                 stmt.setString(8, po.getFreightCompagny());
 
-                stmt.executeQuery();
+                stmt.executeUpdate();
                 c.commit();
                 result = true;
 
@@ -117,7 +117,7 @@ package newpackage;
                 c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
                 stmt.setInt(1,idPo);            
-                stmt.executeQuery();
+                stmt.executeUpdate();
                 c.commit();
                 result = true;
 

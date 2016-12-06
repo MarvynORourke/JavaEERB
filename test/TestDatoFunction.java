@@ -68,13 +68,14 @@ public class TestDatoFunction {
     
     @Test
     public void testListPurchaseOrder() throws SQLException{
-        assertEquals(3, dao.listPurchaseOrder(1).size());
+        assertEquals(2, dao.listPurchaseOrder(1).size());
     }
     
      @Test
     public void testAddPurchaseOrder() throws SQLException, ParseException{
         Date d = new Date(1995, 5, 6);
         PurchaseOrder po = new PurchaseOrder(380008,10,7,980001,d,d,"coucou");
+        System.out.println(po.getProductID());
         dao.addPurchaseOrder(po,1);
         assertEquals(3,dao.listPurchaseOrder(1).size());
     }

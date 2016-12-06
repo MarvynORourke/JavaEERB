@@ -28,6 +28,7 @@ public class PurchaseOrder {
     public PurchaseOrder(int orderNum, int quantite, int shippingCost,int productID, Date saleDate,Date shippingDate,String freightCompagny){
         this.orderNum = orderNum;
         this.quantite = quantite;
+        this.productID = productID;
         this.shippingCost = shippingCost;
         this.saleDate = saleDate;
         this.shippingDate = shippingDate;

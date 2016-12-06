@@ -11,14 +11,15 @@
         <title>Erreur!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="./style.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <h1>$(reAuthentificationMessage)</h1>
-        <form action = "authentificationController" method = "POST">
+        <form class="form" action = "authentificationController" method = "POST">
             <div>Veuillez entrer votre adresse électronique :</div>
-            <textarea rows="1" cols="50" name = "email"></textarea>
+            <input type="text" size="50" style="height:25px;" name="email">
             <div>Veuillez entrer votre mot de passe (identifiant de client) :</div>
-            <textarea rows="1" cols="50" name = "mdp"></textarea>
+            <input type="text" size="50" style="height:25px;" name="mdp">
             <input type="submit">
         </form>
     </body>
