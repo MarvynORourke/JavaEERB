@@ -65,7 +65,7 @@ public class authentificationController extends HttpServlet {
             if (dao.identifiantExist(email, mdp)) {
                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
                 request.setAttribute("commandes", listeCommandes);
-                jspView = "bonsDeCommmandes.jsp";
+                jspView = "bonsDeCommandes.jsp";
             } else {
                 request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
                 jspView = "jspErreurAuthentification.jsp";

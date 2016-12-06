@@ -78,32 +78,43 @@ import java.io.StringWriter;
         }
 
         public boolean addPurchaseOrder(PurchaseOrder po, int id) throws SQLException{
+            System.out.println("YAYA CHOUCROUTE ON COMMENCE !!!!!!!");
             String sql = "INSERT INTO PURCHASE_ORDER VALUES(?,?,?,?,?,?,?,?)";
             boolean result = false;
             Connection c = null;
             try{
                 c = myDataSource.getConnection();
-                c.setAutoCommit(false);
+                //c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
-                stmt.setInt(1, po.getOrderNum());
+                System.out.println(po.getOrderNum());
+                stmt.setInt(1,po.getOrderNum());
+                System.out.println(id);
                 stmt.setInt(2,id);
+                System.out.println(po.getProductID());
                 stmt.setInt(3,po.getProductID());
+                System.out.println(po.getQuantite());
                 stmt.setInt(4,po.getQuantite());
+                System.out.println(po.getShippingCost());
                 stmt.setInt(5,po.getShippingCost());
+                System.out.println(po.getSaleDate());
                 stmt.setDate(6, po.getSaleDate());
+                System.out.println(po.getShippingDate());
                 stmt.setDate(7,po.getShippingDate());
+                System.out.println(po.getFreightCompagny());
                 stmt.setString(8, po.getFreightCompagny());
-
+                System.out.println("YAYA CHOUCROUTE AVANT LE EXECUTEUPDATE !!!!!!!");
                 stmt.executeUpdate();
-                c.commit();
+                System.out.println("YAYA CHOUCROUTE APRES LE EXECUTEUPDATE !!!!!!!");
+                //c.commit();
                 result = true;
-
                 stmt.close();
-                c.setAutoCommit(true);
+                //c.setAutoCommit(true);
                 c.close();
+                
             }catch(SQLException ex){
-                c.rollback();
+                //c.rollback();
                 Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
+                
             }finally{
                 c.close();
             }

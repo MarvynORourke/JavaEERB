@@ -6,12 +6,20 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import newpackage.PurchaseOrder;
+import newpackage.SimpleDataAccessObject;
 
 /**
  *
@@ -20,6 +28,18 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "add", urlPatterns = {"/add"})
 public class add extends HttpServlet {
 
+    public DataSource getDataSource() throws SQLException {
+        org.apache.derby.jdbc.ClientDataSource ds = new org.apache.derby.jdbc.ClientDataSource();
+        ds.setDatabaseName("sample");
+        ds.setUser("app");
+        ds.setPassword("app");
+        // The host on which Network Server is running
+        ds.setServerName("localhost");
+        // port on which Network Server is listening
+        ds.setPortNumber(1527);
+        return ds;
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -29,20 +49,42 @@ public class add extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet add</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet add at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, SQLException {
+        SimpleDataAccessObject dao = null;
+        try {
+            // On récupère les paramètres de la requête
+            String orderNum = request.getParameter("orderNum");
+            String quantite = request.getParameter("quantite");
+            String shippingCost = request.getParameter("shippingCost");
+            String productID = request.getParameter("productID");
+            Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
+            Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
+            String freightCompagny = request.getParameter("freightCompagny");
+            int userId = (Integer)request.getSession(true).getAttribute("mdp");
+
+            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);
+            dao = new SimpleDataAccessObject(getDataSource());
+            dao.addPurchaseOrder(po,userId);
+            System.out.println("ON A FINI DE ADD LE PURCHASE ORDER !!!!!");
+            
+            String jspView; // La page à afficher
+            // En fonction des paramètres, on initialise les variables utilisées dans les JSP
+            // Et on choisit la vue (page JSP) à afficher
+            if(request.getSession(true).getAttribute("mdp") != null ){
+                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer)request.getSession(true).getAttribute("mdp"));
+                request.setAttribute("commandes", listeCommandes);
+                jspView = "bonsDeCommandes.jsp";
+            } else {
+                request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
+                jspView = "reAcceuil.jsp";
+            }   // On continue vers la page JSP sélectionnée
+            request.getRequestDispatcher(jspView).forward(request, response);
+        }catch (java.lang.NumberFormatException notInt) {
+            String jspView;
+            jspView = "jspErreur.jsp";
+            request.getRequestDispatcher(jspView).forward(request, response);
+        } finally {
+            dao = null;
         }
     }
 
@@ -58,7 +100,13 @@ public class add extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(add.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -72,7 +120,13 @@ public class add extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ParseException ex) {
+            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(add.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
