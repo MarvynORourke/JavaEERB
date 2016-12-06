@@ -76,26 +76,17 @@ public class modification extends HttpServlet {
             String quantite = request.getParameter("quantite");
             String shippingCost = request.getParameter("shippingCost");
             String productID = request.getParameter("productID");
-            String saleDatestr = request.getParameter("saleDate");
-            String shippingDatestr = request.getParameter("shippingDate");
+            Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
+            Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
             String ancienOrderNum = request.getParameter("id");
             
-            DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-            Date saleDate = null;
-            Date shippingDate = null;
-            try {
-                saleDate = (Date) df.parse(saleDatestr);
-                shippingDate = (Date) df.parse(shippingDatestr);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             
             String jspView; // La page à afficher
 
             // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
-            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDate,shippingDate,freightCompagny);           
+            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);           
             dao.modifiatePurchaseOrder(po, ancienOrderNum);
             
             

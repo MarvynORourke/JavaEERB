@@ -76,7 +76,7 @@ package newpackage;
         }
 
         public boolean addPurchaseOrder(PurchaseOrder po, int id) throws SQLException{
-            String sql = "INSERT INTO PURCHASE_ORDER(?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO PURCHASE_ORDER VALUES(?,?,?,?,?,?,?,?)";
             boolean result = false;
             Connection c = null;
             try{
@@ -97,8 +97,10 @@ package newpackage;
                 result = true;
 
                 stmt.close();
+                c.setAutoCommit(true);
                 c.close();
             }catch(SQLException ex){
+                c.rollback();
                 Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
             }finally{
                 c.close();
@@ -120,8 +122,10 @@ package newpackage;
                 result = true;
 
                 stmt.close();
+                c.setAutoCommit(true);
                 c.close();
             }catch(SQLException ex){
+                c.rollback();
                 Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
             }finally{
                 c.close();
@@ -140,12 +144,14 @@ package newpackage;
                 c = myDataSource.getConnection();
                 c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
+                java.sql.Date dateSale = new java.sql.Date(po.getSaleDate().getTime());
+                java.sql.Date dateShip = new java.sql.Date(po.getShippingDate().getTime());
                 stmt.setInt(1,po.getOrderNum());
                 stmt.setInt(2,po.getProductID());
                 stmt.setInt(3,po.getQuantite());
                 stmt.setInt(4,po.getShippingCost());
-                stmt.setDate(5,po.getSaleDate());
-                stmt.setDate(6,po.getShippingDate());
+                stmt.setDate(5,dateSale);
+                stmt.setDate(6,dateShip);
                 stmt.setString(7,po.getFreightCompagny());
                 stmt.setInt(8,Integer.parseInt(ancienOrderNum));
                 stmt.executeQuery();
