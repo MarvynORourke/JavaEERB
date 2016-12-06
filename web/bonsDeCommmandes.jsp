@@ -27,8 +27,9 @@
                         <th>Compagnie de fret</th></tr>
                     <c:forEach var="commande" items="${commandes}" varStatus = "status">
                         <tr>
-                            <form action = "modificationBonDeCommande.jsp" method = "POST">
+                            <form action = "mediumModification" method = "POST">
                                 <td name = 'orderNum'>${commande.orderNum}</td>
+                                <input type="hidden" value='${commande.orderNum}' name="orderNum" >
                                 <td name = 'quantite'>${commande.quantite}</td>
                                 <td name = 'shippingCost'>${commande.shippingCost}</td>
                                 <td name = 'productID'>${commande.productID}</td>

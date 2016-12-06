@@ -4,13 +4,9 @@
  * and open the template in the editor.
  */
 
-import java.io.File;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import javax.sql.DataSource;
 import newpackage.PurchaseOrder;
 import newpackage.SimpleDataAccessObject;
@@ -74,16 +70,26 @@ public class TestDatoFunction {
      @Test
     public void testAddPurchaseOrder() throws SQLException, ParseException{
         Date d = new Date(1995, 5, 6);
-        PurchaseOrder po = new PurchaseOrder(380008,10,7,980001,d,d,"coucou");
+        PurchaseOrder po = new PurchaseOrder(380009,10,7,980001,d,d,"coucou");
         System.out.println(po.getProductID());
         dao.addPurchaseOrder(po,1);
         assertEquals(3,dao.listPurchaseOrder(1).size());
+        dao.removePurchaseOrder(po.getOrderNum());
     }
     
     @Test
     public void testRemovePurchaseOrder() throws SQLException{
         dao.removePurchaseOrder(3);
         assertEquals(2,dao.listPurchaseOrder(1).size());
+    }
+    
+    @Test
+    public void testModifyPurchaseOrder() throws SQLException{
+        Date d = new Date(1995, 5, 6);
+        PurchaseOrder po = new PurchaseOrder(380010,36,7,980001,d,d,"TAMER");
+        dao.modifiatePurchaseOrder(po,"10398006");
+        assertEquals(36,dao.listPurchaseOrder(36).get(0).getQuantite());
+        assertEquals(7,dao.listPurchaseOrder(36).get(0).getShippingCost());
     }
 
     // TODO add TestDatoFunction methods here.

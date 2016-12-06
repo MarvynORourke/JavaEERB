@@ -78,8 +78,17 @@ public class modification extends HttpServlet {
             Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
             Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
-            String ancienOrderNum = Integer.toString((Integer)request.getSession(true).getAttribute("mdp"));
-            
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("VOICI L'ANCIEN ORDER NUM !!!!!!!");
+            System.out.println(Integer.toString((Integer)request.getSession(true).getAttribute("ancienOrderNum")));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            String ancienOrderNum = Integer.toString((Integer)request.getSession(true).getAttribute("ancienOrderNum"));
             
             String jspView; // La page à afficher
 
@@ -87,7 +96,7 @@ public class modification extends HttpServlet {
             dao = new SimpleDataAccessObject(getDataSource());
             PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);           
             dao.modifiatePurchaseOrder(po, ancienOrderNum);
-            
+            System.out.println("ON A FINI ET ON A MODIFIEE LA TABLE !!!!!");
             
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
@@ -95,6 +104,7 @@ public class modification extends HttpServlet {
                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession().getAttribute("mdp"));
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommmandes.jsp";
+                System.out.println("ON VA AFFICHER LA NOUVELLE TABLE !!!!!");
             } else {
                 request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
                 jspView = "reAcceuil.jsp";
@@ -104,7 +114,11 @@ public class modification extends HttpServlet {
             //Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
             String jspView;
             jspView = "jspErreur.jsp";
-            request.setAttribute("errorMessage","Voici l'erreur SQL, venant de modification " +  exSQL.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            exSQL.printStackTrace(pw);
+            String traceError = sw.toString();
+            request.setAttribute("errorMessage","Voici l'erreur SQL, venant de modification " +  exSQL.getMessage() + traceError);
             request.getRequestDispatcher(jspView).forward(request, response);
         } /*catch (java.lang.NumberFormatException notInt) {
             String jspView;

@@ -15,7 +15,7 @@
 
     </head>
     <body>
-        <h1>Votre email ou votre mot de passe n'est pas bon. Veuillez, s'il vous plaît, réessayer.</h1>
+        <h1>${errorMessage}</h1>
         <form class="form" action = "authentificationController" method = "POST">
             <div>Veuillez entrer votre adresse électronique :</div>
             <input type="text" size="50" style="height:25px;" name="email">

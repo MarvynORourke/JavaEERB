@@ -20,6 +20,8 @@ package newpackage;
     import java.util.logging.Logger;
     import javax.servlet.annotation.WebServlet;
     import com.google.gson.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @WebServlet(name = "SimpleDataAccessObject", urlPatterns = {"/SimpleDataAccessObject"})
     public class SimpleDataAccessObject {
@@ -134,19 +136,20 @@ package newpackage;
         }
         
         public boolean modifiatePurchaseOrder(PurchaseOrder po, String ancienOrderNum) throws SQLException{
-            String sql = "UPDATE PURCHASE_ORDER" +
+            String sql = "UPDATE PURCHASE_ORDER " +
                          "SET ORDER_NUM = ?, PRODUCT_ID = ?, QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ?" +
-                         "WHERE ORDER_NUM = ?";
+                         " WHERE ORDER_NUM = ?";
             
             boolean result = false;
             Connection c = null;
             try{
                 c = myDataSource.getConnection();
-                c.setAutoCommit(false);
+                //c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
                 java.sql.Date dateSale = new java.sql.Date(po.getSaleDate().getTime());
                 java.sql.Date dateShip = new java.sql.Date(po.getShippingDate().getTime());
                 stmt.setInt(1,po.getOrderNum());
+                System.out.println("LE NUMERO DE L'ORDER ACTUEL: " + po.getOrderNum());
                 stmt.setInt(2,po.getProductID());
                 stmt.setInt(3,po.getQuantite());
                 stmt.setInt(4,po.getShippingCost());
@@ -154,13 +157,15 @@ package newpackage;
                 stmt.setDate(6,dateShip);
                 stmt.setString(7,po.getFreightCompagny());
                 stmt.setInt(8,Integer.parseInt(ancienOrderNum));
-                stmt.executeQuery();
-                c.commit();
+                System.out.println("LE NUMERO DE L'ANCIEN ORDER DU CLIENT : " + Integer.parseInt(ancienOrderNum));
+                stmt.executeUpdate();
+                //c.commit();
                 result = true;
                 stmt.close();
                 c.close();
+                System.out.println("LE PURCHASE ORDER VIENT D'ÊTRE MODIFIE !! !!!!!");
             }catch(SQLException ex){
-                Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }finally{
                 c.close();
             }

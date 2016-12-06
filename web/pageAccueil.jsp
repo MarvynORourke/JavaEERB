@@ -1,7 +1,7 @@
 <%-- 
     Document   : pageAccueil
     Created on : 16 nov. 2016, 14:42:48
-    Author     : rroch & orourke
+    Author     : rroch & Marv
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

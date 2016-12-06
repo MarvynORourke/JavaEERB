@@ -52,55 +52,39 @@ public class mediumModification extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
         SimpleDataAccessObject dao = null;
         try {
-            
-            /*Numéro de commande:<br>
-            <input type="text" name="orderNum"><br>
-            Quantité :<br>
-            <input type="text" name="quantite"><br>
-            Fraits de port :<br>
-            <input type="text" name="shippingCost"><br>
-            ID du produit :<br>
-            <input type="text" name="productID"><br>
-            Date de la vente :<br>
-            <input type="text" name="saleDate"><br>
-            Date de transport :<br>
-            <input type="text" name="shippingDate"><br>
-            Compagnie de transport :<br>
-            <input type="text" name="freightCompagny"><br>*/
-            
             // On récupère les paramètres de la requête
-            String orderNum = request.getParameter("orderNum");
-            String quantite = request.getParameter("quantite");
-            String shippingCost = request.getParameter("shippingCost");
-            String productID = request.getParameter("productID");
-            Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
-            Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
-            String freightCompagny = request.getParameter("freightCompagny");
-            String ancienOrderNum = request.getParameter("id");
-            
-            
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("VOICI TAMER !!!!!!!");
+            System.out.println(request.getParameter("orderNum"));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            request.getSession(true).setAttribute("ancienOrderNum", request.getParameter("orderNum"));            
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("VOICI TAMER MAIS APRES MDR !!!!!!!");
+            System.out.println(request.getSession(true).getAttribute("ancienOrderNum"));
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             String jspView; // La page à afficher
-
-            // Créér le DAO avec sa source de données
-            dao = new SimpleDataAccessObject(getDataSource());
-            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);           
-            dao.modifiatePurchaseOrder(po, ancienOrderNum);
-            
-            
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
             if (request.getSession(true).getAttribute("mdp") != null ) {
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(Integer.parseInt((String) request.getSession(true).getAttribute("mdp")));
-                request.setAttribute("commandes", listeCommandes);
-                jspView = "bonsDeCommmandes.jsp";
+                jspView = "modificationBonDeCommande.jsp";
             } else {
                 request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
                 jspView = "reAcceuil.jsp";
             }   // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
-        } catch (SQLException exSQL) {
-            Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
-        } catch (java.lang.NumberFormatException notInt) {
+        }catch (java.lang.NumberFormatException notInt) {
             String jspView;
             jspView = "jspErreur.jsp";
             request.getRequestDispatcher(jspView).forward(request, response);
