@@ -7,11 +7,10 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,7 +78,7 @@ public class modification extends HttpServlet {
             Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
             Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
-            String ancienOrderNum = request.getParameter("id");
+            String ancienOrderNum = Integer.toString((Integer)request.getSession(true).getAttribute("mdp"));
             
             
             String jspView; // La page à afficher
@@ -93,7 +92,7 @@ public class modification extends HttpServlet {
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
             if (request.getSession(true).getAttribute("mdp") != null ) {
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(Integer.parseInt((String) request.getSession(true).getAttribute("mdp")));
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession().getAttribute("mdp"));
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommmandes.jsp";
             } else {
@@ -102,12 +101,21 @@ public class modification extends HttpServlet {
             }   // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
         } catch (SQLException exSQL) {
-            Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
-        } catch (java.lang.NumberFormatException notInt) {
+            //Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
             String jspView;
             jspView = "jspErreur.jsp";
+            request.setAttribute("errorMessage","Voici l'erreur SQL, venant de modification " +  exSQL.getMessage());
             request.getRequestDispatcher(jspView).forward(request, response);
-        } finally {
+        } /*catch (java.lang.NumberFormatException notInt) {
+            String jspView;
+            jspView = "jspErreur.jsp";
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            notInt.printStackTrace(pw);
+            String traceError = sw.toString();
+            request.setAttribute("errorMessage", "Voici l'erreur notInt, venant de modification " + notInt.getMessage() + traceError);
+            request.getRequestDispatcher(jspView).forward(request, response);
+        }*/ finally {
             dao = null;
         }
     }
@@ -158,5 +166,4 @@ public class modification extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
