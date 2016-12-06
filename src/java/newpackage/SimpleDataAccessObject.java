@@ -182,5 +182,33 @@ import java.io.StringWriter;
             }
         return result;
         }
+        
+         public ArrayList<ObjectCost> getAllPurchaseObject(int idClient) throws SQLException{
+            String sql = "SELECT p.DESCRIPTION,SUM(QUANTITY * PURCHASE_COST) as test" +
+                    " FROM CUSTOMER c INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID)"+
+                    " INNER JOIN PRODUCT p ON (o.PRODUCT_ID = p.PRODUCT_ID) WHERE o.CUSTOMER_ID=? GROUP BY p.DESCRIPTION";
+
+            
+            ObjectCost oc;
+            ArrayList<ObjectCost> result = new ArrayList<>();
+            Connection c = null;
+            try{
+                c = myDataSource.getConnection();
+                PreparedStatement stmt = c.prepareStatement(sql);
+                stmt.setInt(1, idClient);
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()){
+                    oc= new ObjectCost(rs.getString(1),rs.getInt(2));
+                    result.add(oc);
+            }
+                stmt.close();
+                c.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }finally{
+                c.close();
+            }
+        return result;
+        }
 
 }

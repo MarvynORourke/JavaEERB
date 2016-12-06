@@ -3,17 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/newpackage/PurchaseOrder.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/servlets/modification.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/web/jspErreurAuthentification.jsp</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/web/modificationBonDeCommande.jsp</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/web/pageAccueil.jsp</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/servlets/authentificationController.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/servlets/mediumModification.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/servlets/delete.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/newpackage/SimpleDataAccessObject.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/src/java/servlets/add.java</file>
-            <file>file:/C:/Users/Romain/Documents/NetBeansProjects/JavaEERB/web/bonsDeCommandes.jsp</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/src/java/servlets/showInformation.java</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/test/TestDatoFunction.java</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/src/java/servlets/authentificationController.java</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/web/jspErreur.jsp</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/src/java/servlets/add.java</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/web/style.css</file>
+            <file>file:/C:/Users/Marv/Desktop/Cours/L3/Java/TP/JavaEERB/src/java/newpackage/SimpleDataAccessObject.java</file>
         </group>
     </open-files>
 </project-private>

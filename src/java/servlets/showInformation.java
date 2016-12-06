@@ -56,8 +56,7 @@ public class showInformation extends HttpServlet {
 			// Générer du JSON
 			Gson gson = new Gson();
                         int s = (Integer)request.getSession().getAttribute("mdp");
-			String gsonData = gson.toJson(dao.listPurchaseOrder(s));
-                        //SELECT p.DESCRIPTION,SUM(QUANTITY * PURCHASE_COST) as test FROM CUSTOMER c INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID) INNER JOIN PRODUCT p ON (o.PRODUCT_ID = p.PRODUCT_ID) WHERE o.CUSTOMER_ID=1 GROUP BY p.DESCRIPTION;
+			String gsonData = gson.toJson(dao.getAllPurchaseObject(s));
 			out.println(gsonData);			
 		} catch (Exception ex) {
 			Logger.getLogger("JSONServlet").log(Level.SEVERE, "Action en erreur", ex);
