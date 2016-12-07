@@ -20,6 +20,7 @@ package newpackage;
     import java.util.logging.Logger;
     import javax.servlet.annotation.WebServlet;
     import com.google.gson.*;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -183,4 +184,27 @@ import java.util.Map;
             }
         return result;
         }
+        
+         
+         public ArrayList<Integer> getAllProduct() throws SQLException {
+             String sql = "SELECT PRODUCT_ID FROM PRODUCT";
+             ArrayList<Integer>result = new ArrayList<>();
+             Connection c = null;
+             try{
+                 c = myDataSource.getConnection();
+                 Statement stmt = c.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql);
+                 while(rs.next()){
+                     result.add(rs.getInt(1));
+                 }
+                 stmt.close();
+             }catch(SQLException ex){
+                 ex.printStackTrace();
+             }finally{
+                 c.close();
+             }
+             return result;
+         }
+                 
+                 
 }
