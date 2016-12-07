@@ -74,7 +74,7 @@ public class add extends HttpServlet {
                 jspView = "bonsDeCommandes.jsp";
                 request.getRequestDispatcher(jspView).forward(request, response);
             } else {
-                if (!dao.numPurchaseExist(Integer.parseInt(orderNum))) {
+                if (dao.numPurchaseExist(Integer.parseInt(orderNum))) {
                     request.setAttribute("Message", "Le numero de la purchase order existe deja !");
                     ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(userId);
                     ArrayList<Integer> listeProduits = dao.getAllProduct();
