@@ -20,6 +20,7 @@ package newpackage;
     import java.util.logging.Logger;
     import javax.servlet.annotation.WebServlet;
     import com.google.gson.*;
+import java.sql.Date;
     import java.sql.Statement;
     import java.util.HashMap;
     import java.util.Map;
@@ -175,6 +176,29 @@ package newpackage;
                 while(rs.next()){
                     oc= new ObjectCost(rs.getString(1),rs.getInt(2));
                     result.put(oc.getNom(),oc.getTotal());
+            }
+                stmt.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }finally{
+                c.close();
+            }
+        return result;
+        }
+         
+         public Map<Date,Integer> getAllPurchaseObjectByDate(int idClient) throws SQLException{
+            String sql = "SELECT o.SALES_DATE,SUM(QUANTITY) as test FROM CUSTOMER c "+
+                    "INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID) WHERE o.CUSTOMER_ID=? GROUP BY o.SALES_DATE";
+            
+            Map<Date,Integer> result = new HashMap<>();
+            Connection c = null;
+            try{
+                c = myDataSource.getConnection();
+                PreparedStatement stmt = c.prepareStatement(sql);
+                stmt.setInt(1, idClient);
+                ResultSet rs = stmt.executeQuery();
+                while(rs.next()){
+                    result.put(rs.getDate(1),rs.getInt(2));
             }
                 stmt.close();
             }catch(SQLException ex){
