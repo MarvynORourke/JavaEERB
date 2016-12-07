@@ -64,9 +64,15 @@ public class modification extends HttpServlet {
             Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
             String ancienOrderNum = (String)request.getSession(true).getAttribute("ancienOrderNum");
-            
-            String jspView; // La page à afficher
+            int userId = (Integer)request.getSession(true).getAttribute("mdp");
 
+            String jspView; // La page à afficher
+             if(!dao.enoughtQuantity(Integer.parseInt(quantite), userId)){
+                request.setAttribute("Message", "Il n'y a pas assez d'objets en stock");
+                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer)request.getSession(true).getAttribute("mdp"));
+                request.setAttribute("commandes", listeCommandes);
+                jspView = "bonsDeCommandes.jsp";
+            }
             // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
             PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);           

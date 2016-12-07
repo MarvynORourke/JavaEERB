@@ -61,13 +61,24 @@ public class add extends HttpServlet {
             Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
             int userId = (Integer)request.getSession(true).getAttribute("mdp");
+            String jspView; // La page à afficher
+            
+            if(!dao.enoughtQuantity(Integer.parseInt(quantite), userId)){
+                request.setAttribute("Message", "Il n'y a pas assez d'objets en stock");
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(userId);
+                request.setAttribute("commandes", listeCommandes);
+                jspView = "bonsDeCommandes.jsp";
+                request.getRequestDispatcher(jspView).forward(request, response);
 
+            }
+                
+            
             PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);
             dao = new SimpleDataAccessObject(getDataSource());
             dao.addPurchaseOrder(po,userId);
             System.out.println("ON A FINI DE ADD LE PURCHASE ORDER !!!!!");
             
-            String jspView; // La page à afficher
+
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
             if(request.getSession(true).getAttribute("mdp") != null ){

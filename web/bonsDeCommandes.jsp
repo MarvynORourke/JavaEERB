@@ -15,6 +15,7 @@
     </head>
     <body>
         <h1>Vous êtes authentifié. Voici vos bons de commandes :</h1>
+        <h1>${Message}</h1>
         <div>
             <table border="1" class="table-fill">
                 <tr><th>Numéro de commande</th>

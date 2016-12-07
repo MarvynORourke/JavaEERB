@@ -207,7 +207,7 @@ package newpackage;
          }
          
          public boolean enoughtQuantity(int q, int prod_id) throws SQLException{
-             String sql =" SELECT QUANTITY FROM PRODUCT WHERE PRODUCT_ID=?";
+             String sql =" SELECT QUANTITY_ON_HAND FROM PRODUCT WHERE PRODUCT_ID=?";
              boolean result = false;
              Connection c = null;
              try{
@@ -216,7 +216,7 @@ package newpackage;
                  stmt.setInt(1, prod_id);
                  ResultSet rs = stmt.executeQuery(sql);
                  while(rs.next()){
-                     result = q == rs.getInt(1);;
+                     result = q <= rs.getInt(1);;
                  }
                  stmt.close();
              }catch(SQLException ex){
