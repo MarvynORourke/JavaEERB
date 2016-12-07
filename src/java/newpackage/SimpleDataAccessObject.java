@@ -20,9 +20,9 @@ package newpackage;
     import java.util.logging.Logger;
     import javax.servlet.annotation.WebServlet;
     import com.google.gson.*;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+    import java.sql.Statement;
+    import java.util.HashMap;
+    import java.util.Map;
 
 @WebServlet(name = "SimpleDataAccessObject", urlPatterns = {"/SimpleDataAccessObject"})
     public class SimpleDataAccessObject {
@@ -196,6 +196,27 @@ import java.util.Map;
                  ResultSet rs = stmt.executeQuery(sql);
                  while(rs.next()){
                      result.add(rs.getInt(1));
+                 }
+                 stmt.close();
+             }catch(SQLException ex){
+                 ex.printStackTrace();
+             }finally{
+                 c.close();
+             }
+             return result;
+         }
+         
+         public boolean enoughtQuantity(int q, int prod_id) throws SQLException{
+             String sql =" SELECT QUANTITY FROM PRODUCT WHERE PRODUCT_ID=?";
+             boolean result = false;
+             Connection c = null;
+             try{
+                 c = myDataSource.getConnection();
+                 PreparedStatement stmt = c.prepareStatement(sql);
+                 stmt.setInt(1, prod_id);
+                 ResultSet rs = stmt.executeQuery(sql);
+                 while(rs.next()){
+                     result = q == rs.getInt(1);;
                  }
                  stmt.close();
              }catch(SQLException ex){
