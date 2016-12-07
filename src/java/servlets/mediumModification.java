@@ -8,6 +8,7 @@ package servlets;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -36,7 +37,7 @@ public class mediumModification extends HttpServlet {
         ds.setPortNumber(1527);
         return ds;
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,22 +47,41 @@ public class mediumModification extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, SQLException {
         SimpleDataAccessObject dao = null;
         try {
             // On récupère les paramètres de la requête
             request.getSession(true).setAttribute("ancienOrderNum", request.getParameter("orderNum"));
+            String orderNum = request.getParameter("orderNum");
+            String quantite = request.getParameter("quantite");
+            String shippingCost = request.getParameter("shippingCost");
+            String productID = request.getParameter("productID");
+            String saleDate = request.getParameter("saleDate");
+            String shippingDate = request.getParameter("shippingDate");
+            String freightCompagny = request.getParameter("freightCompagny");
+            
+            request.setAttribute("orderNum", orderNum);
+            request.setAttribute("productID", productID);
+            request.setAttribute("quantite", quantite);
+            request.setAttribute("shippingCost", shippingCost);
+            request.setAttribute("saleDate", saleDate);
+            request.setAttribute("shippingDate", shippingDate);
+            request.setAttribute("freightCompagny", freightCompagny);
+            
             String jspView; // La page à afficher
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
-            if (request.getSession(true).getAttribute("mdp") != null ) {
+            dao = new SimpleDataAccessObject(getDataSource());
+            if (request.getSession(true).getAttribute("mdp") != null) {
+                ArrayList<Integer> listeProduits = dao.getAllProduct();
+                request.setAttribute("produits", listeProduits);
                 jspView = "modificationBonDeCommande.jsp";
             } else {
                 request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
                 jspView = "reAcceuil.jsp";
             }   // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
-        }catch (java.lang.NumberFormatException notInt) {
+        } catch (java.lang.NumberFormatException notInt) {
             String jspView;
             jspView = "jspErreur.jsp";
             request.getRequestDispatcher(jspView).forward(request, response);
@@ -86,6 +106,8 @@ public class mediumModification extends HttpServlet {
             processRequest(request, response);
         } catch (ParseException ex) {
             Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(mediumModification.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -104,6 +126,8 @@ public class mediumModification extends HttpServlet {
             processRequest(request, response);
         } catch (ParseException ex) {
             Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(mediumModification.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

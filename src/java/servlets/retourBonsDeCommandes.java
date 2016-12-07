@@ -51,8 +51,11 @@ public class retourBonsDeCommandes extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         SimpleDataAccessObject dao = null;
         try {
+            System.out.println("YAYA CHOUCROUTE");
             String jspView; // La page à afficher
-            int mdp = Integer.parseInt(request.getParameter("mdp"));
+            System.out.println("YAYA CHOUCROUTE 2");
+            int mdp = (Integer)request.getSession(true).getAttribute("mdp");
+            System.out.println("YAYA CHOUCROUTE 3");
 
             // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
@@ -61,6 +64,8 @@ public class retourBonsDeCommandes extends HttpServlet {
             // Et on choisit la vue (page JSP) à afficher
             if (request.getSession(true).getAttribute("mdp") != null ) {
                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
+                ArrayList<Integer> listeProduits = dao.getAllProduct();
+                request.setAttribute("produits", listeProduits);
                 request.setAttribute("commandes", listeCommandes);
 
                 jspView = "bonsDeCommandes.jsp";
@@ -69,10 +74,12 @@ public class retourBonsDeCommandes extends HttpServlet {
                 jspView = "reAcceuil.jsp";
             }   
             // On continue vers la page JSP sélectionnée
+            
             request.getRequestDispatcher(jspView).forward(request, response);
         }catch(java.lang.NumberFormatException notInt){
             String jspView;
             jspView = "jspErreur.jsp";
+            request.setAttribute("errorMessage", "Problème");
             request.getRequestDispatcher(jspView).forward(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(retourBonsDeCommandes.class.getName()).log(Level.SEVERE, null, ex);

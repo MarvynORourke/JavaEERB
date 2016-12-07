@@ -50,12 +50,12 @@ public class logout extends HttpServlet {
             String jspView; // La page à afficher
 
             jspView = "pageAccueil.jsp";
-            
+
             // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
         } catch (ServletException ex) {
             Logger.getLogger(logout.class.getName()).log(Level.SEVERE, null, ex);
-        }finally{
+        } finally {
             request.getSession(false).invalidate();
         }
     }

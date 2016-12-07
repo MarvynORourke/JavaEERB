@@ -38,7 +38,7 @@ public class delete extends HttpServlet {
         ds.setPortNumber(1527);
         return ds;
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -52,15 +52,17 @@ public class delete extends HttpServlet {
         SimpleDataAccessObject dao = null;
         try {
             // On récupère les paramètres de la requête
-            int ancienOrderNum = Integer.parseInt((String)request.getParameter("orderNum"));
+            int ancienOrderNum = Integer.parseInt((String) request.getParameter("orderNum"));
             dao = new SimpleDataAccessObject(getDataSource());
             dao.removePurchaseOrder(ancienOrderNum);
             String jspView; // La page à afficher
-            
+
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
-            if(request.getSession(true).getAttribute("mdp") != null ){
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer)request.getSession(true).getAttribute("mdp"));
+            if (request.getSession(true).getAttribute("mdp") != null) {
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession(true).getAttribute("mdp"));
+                ArrayList<Integer> listeProduits = dao.getAllProduct();
+                request.setAttribute("produits", listeProduits);
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommandes.jsp";
             } else {
@@ -69,9 +71,9 @@ public class delete extends HttpServlet {
             }   // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
             System.out.println("FIN AFFICHAGE !!!!!!!!");
-        }catch (java.lang.NumberFormatException notInt) {
+        } catch (java.lang.NumberFormatException notInt) {
             String jspView;
-             request.setAttribute("errorMessage", "Boarf.");
+            request.setAttribute("errorMessage", "Boarf.");
             jspView = "jspErreur.jsp";
             request.getRequestDispatcher(jspView).forward(request, response);
         } finally {

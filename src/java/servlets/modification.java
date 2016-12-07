@@ -41,7 +41,7 @@ public class modification extends HttpServlet {
         ds.setPortNumber(1527);
         return ds;
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -54,7 +54,7 @@ public class modification extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException {
         SimpleDataAccessObject dao = null;
         try {
-            
+
             // On récupère les paramètres de la requête
             String orderNum = request.getParameter("orderNum");
             String quantite = request.getParameter("quantite");
@@ -63,32 +63,35 @@ public class modification extends HttpServlet {
             Date saleDatestr = Date.valueOf(request.getParameter("saleDate"));
             Date shippingDatestr = Date.valueOf(request.getParameter("shippingDate"));
             String freightCompagny = request.getParameter("freightCompagny");
-            String ancienOrderNum = (String)request.getSession(true).getAttribute("ancienOrderNum");
-            int userId = (Integer)request.getSession(true).getAttribute("mdp");
+            String ancienOrderNum = (String) request.getSession(true).getAttribute("ancienOrderNum");
 
             String jspView; // La page à afficher
-             if(!dao.enoughtQuantity(Integer.parseInt(quantite), userId)){
-                request.setAttribute("Message", "Il n'y a pas assez d'objets en stock");
-                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer)request.getSession(true).getAttribute("mdp"));
-                request.setAttribute("commandes", listeCommandes);
-                jspView = "bonsDeCommandes.jsp";
-            }
-            // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
-            PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);           
-            dao.modifiatePurchaseOrder(po, ancienOrderNum);
-            
-            // En fonction des paramètres, on initialise les variables utilisées dans les JSP
-            // Et on choisit la vue (page JSP) à afficher
-            if (request.getSession(true).getAttribute("mdp") != null ) {
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession().getAttribute("mdp"));
+            if (!dao.enoughtQuantity(Integer.parseInt(quantite), Integer.parseInt(productID))) {
+                request.setAttribute("Message", "Il n'y a pas assez d'objets en stock");
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession(true).getAttribute("mdp"));
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommandes.jsp";
+                request.getRequestDispatcher(jspView).forward(request, response);
             } else {
-                request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
-                jspView = "reAcceuil.jsp";
-            }   // On continue vers la page JSP sélectionnée
-            request.getRequestDispatcher(jspView).forward(request, response);
+                PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum), Integer.parseInt(quantite), Integer.parseInt(shippingCost), Integer.parseInt(productID), saleDatestr, shippingDatestr, freightCompagny);
+                dao.modifiatePurchaseOrder(po, ancienOrderNum);
+
+                // En fonction des paramètres, on initialise les variables utilisées dans les JSP
+                // Et on choisit la vue (page JSP) à afficher
+                if (request.getSession(true).getAttribute("mdp") != null) {
+                    ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer) request.getSession().getAttribute("mdp"));
+                    ArrayList<Integer> listeProduits = dao.getAllProduct();
+                    request.setAttribute("produits", listeProduits);
+                    request.setAttribute("commandes", listeCommandes);
+                    jspView = "bonsDeCommandes.jsp";
+                } else {
+                    request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
+                    jspView = "reAcceuil.jsp";
+                }   // On continue vers la page JSP sélectionnée
+                request.getRequestDispatcher(jspView).forward(request, response);
+            }
+
         } catch (SQLException exSQL) {
             //Logger.getLogger(authentificationController.class.getName()).log(Level.SEVERE, null, exSQL);
             String jspView;
@@ -97,9 +100,9 @@ public class modification extends HttpServlet {
             PrintWriter pw = new PrintWriter(sw);
             exSQL.printStackTrace(pw);
             String traceError = sw.toString();
-            request.setAttribute("errorMessage","Voici l'erreur SQL, venant de modification " +  exSQL.getMessage() + traceError);
+            request.setAttribute("errorMessage", "Voici l'erreur SQL, venant de modification " + exSQL.getMessage() + traceError);
             request.getRequestDispatcher(jspView).forward(request, response);
-        }finally{
+        } finally {
             dao = null;
         }
     }

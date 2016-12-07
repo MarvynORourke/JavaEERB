@@ -68,7 +68,7 @@ public class authentificationController extends HttpServlet {
                 request.setAttribute("produits", listeProduits);
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommandes.jsp";
-            }else{
+            } else {
                 request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
                 jspView = "jspErreurAuthentification.jsp";
             }

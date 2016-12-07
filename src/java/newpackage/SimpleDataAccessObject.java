@@ -238,9 +238,10 @@ import java.sql.Date;
                  c = myDataSource.getConnection();
                  PreparedStatement stmt = c.prepareStatement(sql);
                  stmt.setInt(1, prod_id);
-                 ResultSet rs = stmt.executeQuery(sql);
+                 ResultSet rs = stmt.executeQuery();
                  while(rs.next()){
                      result = q <= rs.getInt(1);
+                     System.out.println(rs.getInt(1));
                  }
                  stmt.close();
              }catch(SQLException ex){
@@ -252,16 +253,16 @@ import java.sql.Date;
          }
          
          public boolean numPurchaseExist(int numPurchase) throws SQLException{
-             String sql = " SELECT * FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
+             String sql = "SELECT COUNT * AS TEST FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
              boolean result = false;
              Connection c = null;
              try{
                  c = myDataSource.getConnection();
                  PreparedStatement stmt = c.prepareStatement(sql);
                  stmt.setInt(1, numPurchase);
-                 ResultSet rs = stmt.executeQuery(sql);
+                 ResultSet rs = stmt.executeQuery();
                  while(rs.next()){
-                     result = true;
+                     result = 0 == rs.getInt(1);
                  }
                  stmt.close();
              }catch(SQLException ex){

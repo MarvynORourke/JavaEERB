@@ -36,9 +36,15 @@
                         <td>${commande.saleDate}</td>
                         <td>${commande.shippingDate}</td>
                         <td>${commande.freightCompagny}</td>
-                    <form action = "mediumModification" method = "POST" id="formModify">
-                        <input type="hidden" value='${commande.orderNum}' name="orderNum" >
-                        <td><input type="submit" value="Modifier" form="formModify"></td>
+                    <form action = "mediumModification" method = "POST">
+                        <input type="hidden" value="${commande.orderNum}" name="orderNum" >
+                        <input type="hidden" value="${commande.quantite}" name="quantite" >
+                        <input type="hidden" value="${commande.shippingCost}" name="shippingCost" >
+                        <input type="hidden" value="${commande.productID}" name="productID" >
+                        <input type="hidden" value="${commande.saleDate}" name="saleDate" >
+                        <input type="hidden" value="${commande.shippingDate}" name="shippingDate" >
+                        <input type="hidden" value="${commande.freightCompagny}" name="freightCompagny" >
+                        <td><input type="submit" value="Modifier"></td>
                     </form>
                     <form action = "delete" method = "POST">
                         <input type="hidden" value='${commande.orderNum}' name="orderNum" >
@@ -51,7 +57,12 @@
                     <td><input type="text" name="orderNum"></td>
                     <td><input type="text" name="quantite"></td>
                     <td><input type="text" name="shippingCost"></td>
-                    <td><input type="text" name="productID"></td>
+                    <td><select name="productID">
+                                <c:forEach var="produit" items="${produits}" varStatus = "status" >
+                                    <option value="${produit}"> ${produit} </option>
+                                </c:forEach>
+                        </select>
+                    </td>
                     <td><input type="text" name="saleDate"></td>
                     <td><input type="text" name="shippingDate"></td>
                     <td><input type="text" name="freightCompagny"></td>
@@ -63,5 +74,8 @@
                 <td><input type="submit" value="Graphe de données"></td>
             </form>
     </div>
+        <form action = "logout" method = "POST">
+            <input type="submit" value="Se déconnecter">
+        </form>
 </body>
 </html>
