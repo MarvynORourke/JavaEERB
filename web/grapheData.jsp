@@ -62,7 +62,10 @@
     <body>
         <div class="voila" id="piechart" style="width: 900px; height: 500px;"></div>
         <form action = "retourBonsDeCommandes" method = "POST">
-            <td><input type="submit" value="Retour au bons de commandes"></td>
+            <input type="submit" value="Retour au bons de commandes">
+        </form>
+        <form action = "logout" method = "POST">
+            <input type="submit" value="Se déconnecter">
         </form>
     </body>
 </html>

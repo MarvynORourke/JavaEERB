@@ -30,5 +30,8 @@
             <input type="text" name="freightCompagny" value=${freightCompagny}><br>
             <input type="submit" value="Valider">
         </form>
+            <form action = "logout" method = "POST">
+            <input type="submit" value="Se déconnecter">
+        </form>
     </body>
 </html>
