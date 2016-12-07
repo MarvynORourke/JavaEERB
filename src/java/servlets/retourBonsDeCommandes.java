@@ -7,6 +7,7 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import newpackage.PurchaseOrder;
 import newpackage.SimpleDataAccessObject;
 
 /**
@@ -50,6 +52,7 @@ public class retourBonsDeCommandes extends HttpServlet {
         SimpleDataAccessObject dao = null;
         try {
             String jspView; // La page à afficher
+            int mdp = Integer.parseInt(request.getParameter("mdp"));
 
             // Créér le DAO avec sa source de données
             dao = new SimpleDataAccessObject(getDataSource());
@@ -57,6 +60,9 @@ public class retourBonsDeCommandes extends HttpServlet {
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
             if (request.getSession(true).getAttribute("mdp") != null ) {
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
+                request.setAttribute("commandes", listeCommandes);
+
                 jspView = "bonsDeCommandes.jsp";
             } else {
                 request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");

@@ -61,7 +61,7 @@
     </head>
     <body>
         <div class="voila" id="piechart" style="width: 900px; height: 500px;"></div>
-        <form action = "retourBonsDeCommandes.java" method = "POST">
+        <form action = "retourBonsDeCommandes" method = "POST">
             <td><input type="submit" value="Retour au bons de commandes"></td>
         </form>
     </body>
