@@ -71,6 +71,13 @@ public class add extends HttpServlet {
                 request.getRequestDispatcher(jspView).forward(request, response);
 
             }
+            if(!dao.numPurchaseExist(Integer.parseInt(orderNum))){
+                request.setAttribute("Message", "Le numero de la purchase order existe deja !");
+                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(userId);
+                request.setAttribute("commandes", listeCommandes);
+                jspView = "bonsDeCommandes.jsp";
+                request.getRequestDispatcher(jspView).forward(request, response);
+            }
                 
             
             PurchaseOrder po = new PurchaseOrder(Integer.parseInt(orderNum),Integer.parseInt(quantite),Integer.parseInt(shippingCost),Integer.parseInt(productID),saleDatestr,shippingDatestr,freightCompagny);

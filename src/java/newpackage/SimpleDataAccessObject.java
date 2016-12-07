@@ -240,7 +240,28 @@ import java.sql.Date;
                  stmt.setInt(1, prod_id);
                  ResultSet rs = stmt.executeQuery(sql);
                  while(rs.next()){
-                     result = q <= rs.getInt(1);;
+                     result = q <= rs.getInt(1);
+                 }
+                 stmt.close();
+             }catch(SQLException ex){
+                 ex.printStackTrace();
+             }finally{
+                 c.close();
+             }
+             return result;
+         }
+         
+         public boolean numPurchaseExist(int numPurchase) throws SQLException{
+             String sql = " SELECT * FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
+             boolean result = false;
+             Connection c = null;
+             try{
+                 c = myDataSource.getConnection();
+                 PreparedStatement stmt = c.prepareStatement(sql);
+                 stmt.setInt(1, numPurchase);
+                 ResultSet rs = stmt.executeQuery(sql);
+                 while(rs.next()){
+                     result = true;
                  }
                  stmt.close();
              }catch(SQLException ex){
