@@ -33,7 +33,12 @@ import java.sql.Date;
         public SimpleDataAccessObject(DataSource dataSource) {
                     this.myDataSource = dataSource;
             }
-
+           /**
+            * Fonction qui regarde si un mail existe
+            * @param mail
+            * @return
+            * @throws SQLException 
+            */
         public boolean mailCustomerExist(String mail) throws SQLException{
 
             boolean resultat = false;
@@ -47,7 +52,13 @@ import java.sql.Date;
             }
             return resultat;
         }
-
+           /**
+            * Fonction qui regarde si un untilisateur peut se connecter
+            * @param email
+            * @param id
+            * @return
+            * @throws SQLException 
+            */
         public boolean identifiantExist(String email, int id) throws SQLException{
             boolean resultat = false; 
             String sql = "SELECT CUSTOMER_ID FROM CUSTOMER WHERE EMAIL = ?";
@@ -60,7 +71,12 @@ import java.sql.Date;
             }
             return resultat;
         } 
-
+        /**
+         * Fonction qui permet de ressortir la liste des Purchase Order
+         * @param id
+         * @return
+         * @throws SQLException 
+         */
         public ArrayList<PurchaseOrder> listPurchaseOrder(int id ) throws SQLException{
             ArrayList<PurchaseOrder> listeAchat = new ArrayList();
             PurchaseOrder po;
@@ -78,7 +94,13 @@ import java.sql.Date;
             listeAchatJSON.toJson(listeAchat);
             return listeAchat;
         }
-
+        /**
+         * Fonction qui ajoute une Purchase Order quand c'est possible
+         * @param po
+         * @param id
+         * @return
+         * @throws SQLException 
+         */
         public boolean addPurchaseOrder(PurchaseOrder po, int id) throws SQLException{
             System.out.println("YAYA CHOUCROUTE ON COMMENCE !!!!!!!");
             String sql = "INSERT INTO PURCHASE_ORDER VALUES(?,?,?,?,?,?,?,?)";
@@ -108,7 +130,12 @@ import java.sql.Date;
             }
             return result;
         }
-
+        /**
+         * Fonction qui enlève une purchase order quand c'est possible
+         * @param idPo
+         * @return
+         * @throws SQLException 
+         */
         public boolean removePurchaseOrder(int idPo) throws SQLException{
             String sql = "DELETE FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
             boolean result = false;
@@ -128,7 +155,13 @@ import java.sql.Date;
             }
         return result;
         }
-        
+        /**
+         * Fonction qui modifie une Purchase Order quand c'est possible
+         * @param po
+         * @param ancienOrderNum
+         * @return
+         * @throws SQLException 
+         */
         public boolean modifiatePurchaseOrder(PurchaseOrder po, String ancienOrderNum) throws SQLException{
             String sql = "UPDATE PURCHASE_ORDER " +
                          "SET ORDER_NUM = ?, PRODUCT_ID = ?, QUANTITY = ?, SHIPPING_COST = ?, SALES_DATE = ?, SHIPPING_DATE = ?, FREIGHT_COMPANY = ?" +
@@ -159,7 +192,12 @@ import java.sql.Date;
             }
         return result;
         }
-        
+        /**
+         * Fonction qui permet d'obtenir toute les objets et le total payé des purchase order d'un client 
+         * @param idClient
+         * @return
+         * @throws SQLException 
+         */
          public Map<String,Integer> getAllPurchaseObject(int idClient) throws SQLException{
             String sql = "SELECT p.DESCRIPTION,SUM(QUANTITY * PURCHASE_COST) as test" +
                     " FROM CUSTOMER c INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID)"+
@@ -185,7 +223,12 @@ import java.sql.Date;
             }
         return result;
         }
-         
+         /**
+          * Fonction qui permet de récuper le total d'achat effectué à une date d'un client
+          * @param idClient
+          * @return
+          * @throws SQLException 
+          */
          public Map<Date,Integer> getAllPurchaseObjectByDate(int idClient) throws SQLException{
             String sql = "SELECT o.SALES_DATE,SUM(QUANTITY) as test FROM CUSTOMER c "+
                     "INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID) WHERE o.CUSTOMER_ID=? GROUP BY o.SALES_DATE";
@@ -209,7 +252,11 @@ import java.sql.Date;
         return result;
         }
         
-         
+         /**
+          * Fonction qui permet de récupérer tout les produit
+          * @return
+          * @throws SQLException 
+          */
          public ArrayList<Integer> getAllProduct() throws SQLException {
              String sql = "SELECT PRODUCT_ID FROM PRODUCT";
              ArrayList<Integer>result = new ArrayList<>();
@@ -229,7 +276,13 @@ import java.sql.Date;
              }
              return result;
          }
-         
+         /**
+          * Fonction qui permet de savoir si l'utilisateur ne prend pas trop d'objets par rapport à la quantité restante
+          * @param q
+          * @param prod_id
+          * @return
+          * @throws SQLException 
+          */
          public boolean enoughtQuantity(int q, int prod_id) throws SQLException{
              String sql =" SELECT QUANTITY_ON_HAND FROM PRODUCT WHERE PRODUCT_ID=?";
              boolean result = false;
@@ -251,9 +304,14 @@ import java.sql.Date;
              }
              return result;
          }
-         
+         /**
+          * Fonction qui permet de savoir si une purchase order existe deja
+          * @param numPurchase
+          * @return
+          * @throws SQLException 
+          */
          public boolean numPurchaseExist(int numPurchase) throws SQLException{
-             String sql = "SELECT COUNT * AS TEST FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
+             String sql = "SELECT COUNT(*) AS TEST FROM PURCHASE_ORDER WHERE ORDER_NUM=?";
              boolean result = false;
              Connection c = null;
              try{

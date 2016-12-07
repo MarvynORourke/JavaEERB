@@ -7,6 +7,7 @@
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import javax.sql.DataSource;
 import newpackage.PurchaseOrder;
 import newpackage.SimpleDataAccessObject;
@@ -91,6 +92,25 @@ public class TestDatoFunction {
         assertEquals(36,dao.listPurchaseOrder(36).get(0).getQuantite());
         assertEquals(7,dao.listPurchaseOrder(36).get(0).getShippingCost());
     }
+    @Test
+    public void testGetAllPurchaseOrder() throws SQLException{
+        ArrayList<Integer> a = dao.getAllProduct();
+        assertEquals(30,a.size());
+    }
+    @Test
+    public void testEnoughtQuantity() throws SQLException{
+        assertEquals(false,dao.enoughtQuantity(1000000000, 980001));
+        assertEquals(true,dao.enoughtQuantity(1, 980001));
+    }
+    @Test
+    public void testNumPurchaseExist() throws SQLException{
+        assertEquals(false,dao.numPurchaseExist(10398001));
+        assertEquals(true,dao.numPurchaseExist(4));
+
+    }
+    
+ 
+    
 
     // TODO add TestDatoFunction methods here.
     // The methods must be annotated with annotation @Test. For example:
