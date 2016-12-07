@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="./style.css" rel="stylesheet" type="text/css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>BIG BROTHER IS WATCHING YOU</title>
         <!-- On charge JQuery -->
@@ -40,9 +41,9 @@
 						// On reformate le résultat comme un tableau
 						var chartData = [];
 						// On met le descriptif des données
-						chartData.push(["Produit", "Quantité"]);
-						for(var client in result) {
-							chartData.push([client, result[client]]);
+						chartData.push(["nom", "total"]);
+						for(var product in result) {
+							chartData.push([product, result[product]]);
 						}
 						// On dessine le graphique
 						drawChart(chartData);
@@ -50,7 +51,7 @@
 				error: showError
 			});
 		}
-		
+
 		// Fonction qui traite les erreurs de la requête
 		function showError(xhr, status, message) {
 			alert("Erreur: " + status + " : " + message);
@@ -59,7 +60,9 @@
 	</script>
     </head>
     <body>
-        <div id="piechart" style="width: 900px; height: 500px;"></div>
-
+        <div class="voila" id="piechart" style="width: 900px; height: 500px;"></div>
+        <form action = "retourBonsDeCommandes.java" method = "POST">
+            <td><input type="submit" value="Retour au bons de commandes"></td>
+        </form>
     </body>
 </html>

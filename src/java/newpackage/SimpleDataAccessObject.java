@@ -20,8 +20,8 @@ package newpackage;
     import java.util.logging.Logger;
     import javax.servlet.annotation.WebServlet;
     import com.google.gson.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(name = "SimpleDataAccessObject", urlPatterns = {"/SimpleDataAccessObject"})
     public class SimpleDataAccessObject {
@@ -86,33 +86,19 @@ import java.io.StringWriter;
                 c = myDataSource.getConnection();
                 //c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
-                System.out.println(po.getOrderNum());
                 stmt.setInt(1,po.getOrderNum());
-                System.out.println(id);
                 stmt.setInt(2,id);
-                System.out.println(po.getProductID());
                 stmt.setInt(3,po.getProductID());
-                System.out.println(po.getQuantite());
                 stmt.setInt(4,po.getQuantite());
-                System.out.println(po.getShippingCost());
                 stmt.setInt(5,po.getShippingCost());
-                System.out.println(po.getSaleDate());
                 stmt.setDate(6, po.getSaleDate());
-                System.out.println(po.getShippingDate());
                 stmt.setDate(7,po.getShippingDate());
-                System.out.println(po.getFreightCompagny());
                 stmt.setString(8, po.getFreightCompagny());
-                System.out.println("YAYA CHOUCROUTE AVANT LE EXECUTEUPDATE !!!!!!!");
                 stmt.executeUpdate();
-                System.out.println("YAYA CHOUCROUTE APRES LE EXECUTEUPDATE !!!!!!!");
-                //c.commit();
                 result = true;
                 stmt.close();
-                //c.setAutoCommit(true);
-                c.close();
                 
             }catch(SQLException ex){
-                //c.rollback();
                 Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
                 
             }finally{
@@ -127,16 +113,11 @@ import java.io.StringWriter;
             Connection c = null;
             try{
                 c = myDataSource.getConnection();
-                c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
-                stmt.setInt(1,idPo);            
+                stmt.setInt(1,idPo);
                 stmt.executeUpdate();
-                c.commit();
                 result = true;
-
                 stmt.close();
-                c.setAutoCommit(true);
-                c.close();
             }catch(SQLException ex){
                 c.rollback();
                 Logger.getLogger(SimpleDataAccessObject.class.getName()).log(Level.SEVERE, null, ex);
@@ -155,12 +136,10 @@ import java.io.StringWriter;
             Connection c = null;
             try{
                 c = myDataSource.getConnection();
-                //c.setAutoCommit(false);
                 PreparedStatement stmt = c.prepareStatement(sql);
                 java.sql.Date dateSale = new java.sql.Date(po.getSaleDate().getTime());
                 java.sql.Date dateShip = new java.sql.Date(po.getShippingDate().getTime());
                 stmt.setInt(1,po.getOrderNum());
-                System.out.println("LE NUMERO DE L'ORDER ACTUEL: " + po.getOrderNum());
                 stmt.setInt(2,po.getProductID());
                 stmt.setInt(3,po.getQuantite());
                 stmt.setInt(4,po.getShippingCost());
@@ -168,13 +147,9 @@ import java.io.StringWriter;
                 stmt.setDate(6,dateShip);
                 stmt.setString(7,po.getFreightCompagny());
                 stmt.setInt(8,Integer.parseInt(ancienOrderNum));
-                System.out.println("LE NUMERO DE L'ANCIEN ORDER DU CLIENT : " + Integer.parseInt(ancienOrderNum));
                 stmt.executeUpdate();
-                //c.commit();
                 result = true;
                 stmt.close();
-                c.close();
-                System.out.println("LE PURCHASE ORDER VIENT D'ÊTRE MODIFIE !! !!!!!");
             }catch(SQLException ex){
                 ex.printStackTrace();
             }finally{
@@ -183,14 +158,13 @@ import java.io.StringWriter;
         return result;
         }
         
-         public ArrayList<ObjectCost> getAllPurchaseObject(int idClient) throws SQLException{
+         public Map<String,Integer> getAllPurchaseObject(int idClient) throws SQLException{
             String sql = "SELECT p.DESCRIPTION,SUM(QUANTITY * PURCHASE_COST) as test" +
                     " FROM CUSTOMER c INNER JOIN PURCHASE_ORDER o ON (c.CUSTOMER_ID = o.CUSTOMER_ID)"+
                     " INNER JOIN PRODUCT p ON (o.PRODUCT_ID = p.PRODUCT_ID) WHERE o.CUSTOMER_ID=? GROUP BY p.DESCRIPTION";
-
             
             ObjectCost oc;
-            ArrayList<ObjectCost> result = new ArrayList<>();
+            Map<String,Integer> result = new HashMap<>();
             Connection c = null;
             try{
                 c = myDataSource.getConnection();
@@ -199,10 +173,9 @@ import java.io.StringWriter;
                 ResultSet rs = stmt.executeQuery();
                 while(rs.next()){
                     oc= new ObjectCost(rs.getString(1),rs.getInt(2));
-                    result.add(oc);
+                    result.put(oc.getNom(),oc.getTotal());
             }
                 stmt.close();
-                c.close();
             }catch(SQLException ex){
                 ex.printStackTrace();
             }finally{
@@ -210,5 +183,4 @@ import java.io.StringWriter;
             }
         return result;
         }
-
 }

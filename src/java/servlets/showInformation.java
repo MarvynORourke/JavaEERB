@@ -25,7 +25,7 @@ import newpackage.SimpleDataAccessObject;
  */
 @WebServlet(name = "showInformation", urlPatterns = {"/showInformation"})
 public class showInformation extends HttpServlet {
-    
+
     public DataSource getDataSource() throws SQLException {
         org.apache.derby.jdbc.ClientDataSource ds = new org.apache.derby.jdbc.ClientDataSource();
         ds.setDatabaseName("sample");
@@ -50,19 +50,22 @@ public class showInformation extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String jspView;
         try (PrintWriter out = response.getWriter()) {
-			// Créér le DAO avec sa source de données
-			SimpleDataAccessObject dao = new SimpleDataAccessObject(getDataSource());
-			// Générer du JSON
-			Gson gson = new Gson();
-                        int s = (Integer)request.getSession().getAttribute("mdp");
-			String gsonData = gson.toJson(dao.getAllPurchaseObject(s));
-			out.println(gsonData);			
-		} catch (Exception ex) {
-			Logger.getLogger("JSONServlet").log(Level.SEVERE, "Action en erreur", ex);
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-		}
-	}
+            // Créér le DAO avec sa source de données
+            SimpleDataAccessObject dao = new SimpleDataAccessObject(getDataSource());
+            // Générer du JSON
+            Gson gson = new Gson();
+            int s = (Integer) request.getSession().getAttribute("mdp");
+            String gsonData = gson.toJson(dao.getAllPurchaseObject(s));
+            out.println(gsonData);
+            jspView = "grapheData.jsp";
+            //request.getRequestDispatcher(jspView).forward(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger("JSONServlet").log(Level.SEVERE, "Action en erreur", ex);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

@@ -14,7 +14,8 @@
         <link href="./style.css" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <h1>$(reAuthentificationMessage)</h1>
+        <h1>Il y a eu un problème</h1>
+        <h1>${reAuthentificationMessage}</h1>
         <form class="form" action = "authentificationController" method = "POST">
             <div>Veuillez entrer votre adresse électronique :</div>
             <input type="text" size="50" style="height:25px;" name="email">

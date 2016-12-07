@@ -7,8 +7,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -17,15 +15,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import newpackage.PurchaseOrder;
 import newpackage.SimpleDataAccessObject;
 
 /**
+ * Cette classe est une servlet et est utilisée pour authentifier l'utilisateur.
  *
- * @author Romain
+ * @author rroch
  */
-@WebServlet(name = "delete", urlPatterns = {"/delete"})
-public class delete extends HttpServlet {
+@WebServlet(name = "retourBonsDeCommandes", urlPatterns = {"/retourBonsDeCommandes"})
+public class retourBonsDeCommandes extends HttpServlet {
 
     public DataSource getDataSource() throws SQLException {
         org.apache.derby.jdbc.ClientDataSource ds = new org.apache.derby.jdbc.ClientDataSource();
@@ -38,7 +36,7 @@ public class delete extends HttpServlet {
         ds.setPortNumber(1527);
         return ds;
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -48,32 +46,30 @@ public class delete extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ParseException, SQLException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         SimpleDataAccessObject dao = null;
         try {
-            // On récupère les paramètres de la requête
-            int ancienOrderNum = Integer.parseInt((String)request.getParameter("orderNum"));
-            dao = new SimpleDataAccessObject(getDataSource());
-            dao.removePurchaseOrder(ancienOrderNum);
             String jspView; // La page à afficher
-            
+
+            // Créér le DAO avec sa source de données
+            dao = new SimpleDataAccessObject(getDataSource());
+
             // En fonction des paramètres, on initialise les variables utilisées dans les JSP
             // Et on choisit la vue (page JSP) à afficher
-            if(request.getSession(true).getAttribute("mdp") != null ){
-                ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder((Integer)request.getSession(true).getAttribute("mdp"));
-                request.setAttribute("commandes", listeCommandes);
+            if (request.getSession(true).getAttribute("mdp") != null ) {
                 jspView = "bonsDeCommandes.jsp";
             } else {
                 request.setAttribute("reAuthentificationMessage", "Vous n'êtes pas connecté. Veuillez vous connecter s'il vous plaît.");
                 jspView = "reAcceuil.jsp";
-            }   // On continue vers la page JSP sélectionnée
+            }   
+            // On continue vers la page JSP sélectionnée
             request.getRequestDispatcher(jspView).forward(request, response);
-            System.out.println("FIN AFFICHAGE !!!!!!!!");
-        }catch (java.lang.NumberFormatException notInt) {
+        }catch(java.lang.NumberFormatException notInt){
             String jspView;
-             request.setAttribute("errorMessage", "Boarf.");
             jspView = "jspErreur.jsp";
             request.getRequestDispatcher(jspView).forward(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(retourBonsDeCommandes.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             dao = null;
         }
@@ -88,16 +84,9 @@ public class delete extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ParseException ex) {
-            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(add.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -108,16 +97,9 @@ public class delete extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (ParseException ex) {
-            Logger.getLogger(modification.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(add.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -125,7 +107,6 @@ public class delete extends HttpServlet {
      *
      * @return a String containing servlet description
      */
-    @Override
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>

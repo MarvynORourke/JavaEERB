@@ -66,10 +66,11 @@ public class authentificationController extends HttpServlet {
                 ArrayList<PurchaseOrder> listeCommandes = dao.listPurchaseOrder(mdp);
                 request.setAttribute("commandes", listeCommandes);
                 jspView = "bonsDeCommandes.jsp";
-            } else {
+            }else{
                 request.setAttribute("errorMessage", "Paramètre p1 incorrect: " + email);
                 jspView = "jspErreurAuthentification.jsp";
-            }   // On continue vers la page JSP sélectionnée
+            }
+            // On continue vers la page JSP sélectionnée
             HttpSessionBindingListener session = null;
             request.getSession().setAttribute("mdp", mdp);
             request.getRequestDispatcher(jspView).forward(request, response);
